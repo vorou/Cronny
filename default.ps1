@@ -20,3 +20,10 @@ task check-env {
     throw 'Looks like RabbitMQ is stopped'
   }
 }
+
+task init-env {
+  if(test-path $rabbitmqctl) {
+    throw "Looks like RabbitMQ already installed: rabbitmqctl found at $rabbitmqctl"
+  }
+  cinst -y rabbitmq
+}
