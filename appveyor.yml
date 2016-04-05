@@ -1,4 +1,7 @@
 version: 0.0.{build}
 
+install:
+  - ps: .\build.ps1 init-env
+
 build_script:
   - ps: .\build.ps1
