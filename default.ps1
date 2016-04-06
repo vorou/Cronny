@@ -25,5 +25,6 @@ task init-env {
   if(test-path $rabbitmqctl) {
     throw "Looks like RabbitMQ already installed: rabbitmqctl found at $rabbitmqctl"
   }
-  cinst -y rabbitmq
+  # erlang is already there in AppVeyor env
+  cinst -y rabbitmq --ignoredependencies
 }
