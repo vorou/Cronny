@@ -7,4 +7,4 @@ build_script:
   - ps: .\build.ps1
 
 cache:
-  - C:\Users\appveyor\AppData\Local\Temp\chocolatey
+  - C:\Users\appveyor\AppData\Local\Temp\chocolatey -> appveyor.yml
