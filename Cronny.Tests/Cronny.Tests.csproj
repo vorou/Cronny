@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="CronnyTests.cs" />
     <Compile Include="EachMinuteJobMessage.cs" />
+    <Compile Include="FixieConvention.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

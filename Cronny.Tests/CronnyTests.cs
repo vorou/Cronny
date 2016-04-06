@@ -4,11 +4,24 @@ using Shouldly;
 
 namespace Cronny.Tests
 {
-    public class CronnyTests
+    public class CronnyTests : IDisposable
     {
+        public void Dispose()
+        {
+            CronnyControl.Bus.Dispose();
+        }
+
         public void Canary()
         {
             true.ShouldBe(true);
+        }
+
+        public void Canary_Rabbit()
+        {
+            var reset = new ManualResetEventSlim();
+            CronnyControl.Bus.Subscribe<EachMinuteJobMessage>("yo", m => reset.Set());
+            CronnyControl.Bus.Publish(new EachMinuteJobMessage());
+            Should.CompleteIn(() => reset.Wait(), TimeSpan.FromSeconds(2));
         }
 
         // public void Run_MessageShouldBeSentEachMinute_ShouldReceiveIt()
