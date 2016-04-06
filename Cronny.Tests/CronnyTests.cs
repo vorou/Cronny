@@ -11,19 +11,19 @@ namespace Cronny.Tests
             true.ShouldBe(true);
         }
 
-        public void Run_MessageShouldBeSentEachMinute_ShouldReceiveIt()
-        {
-            var resetEvent = new ManualResetEventSlim();
-            CronnyControl.Bus.Subscribe<EachMinuteJobMessage>("test", m => resetEvent.Set());
-            CronnyControl.Run();
-            try
-            {
-                Should.CompleteIn(() => resetEvent.Wait(), TimeSpan.FromMinutes(2));
-            }
-            finally
-            {
-                CronnyControl.Bus.Dispose();
-            }
-        }
+        // public void Run_MessageShouldBeSentEachMinute_ShouldReceiveIt()
+        // {
+        //     var resetEvent = new ManualResetEventSlim();
+        //     CronnyControl.Bus.Subscribe<EachMinuteJobMessage>("test", m => resetEvent.Set());
+        //     CronnyControl.Run();
+        //     try
+        //     {
+        //         Should.CompleteIn(() => resetEvent.Wait(), TimeSpan.FromMinutes(2));
+        //     }
+        //     finally
+        //     {
+        //         CronnyControl.Bus.Dispose();
+        //     }
+        // }
     }
 }
