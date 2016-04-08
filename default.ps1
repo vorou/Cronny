@@ -1,11 +1,12 @@
 properties {
+  $msbuild = 'C:\Program Files (x86)\MSBuild\14.0\bin\msbuild.exe'
   $rabbitmqctl = 'C:\Program Files (x86)\RabbitMQ Server\rabbitmq_server-3.5.4\sbin\rabbitmqctl.bat'
 }
 
 task default -depends test
 
 task compile {
-  exec {msbuild /v:quiet Cronny.sln}
+  exec {& $msbuild /v:quiet Cronny.sln}
 }
 
 task test -depends check-env, compile {
