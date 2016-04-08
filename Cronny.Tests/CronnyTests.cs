@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using Cronny.TestMessages;
 using Shouldly;
 
 namespace Cronny.Tests
@@ -8,7 +9,7 @@ namespace Cronny.Tests
     {
         public void Dispose()
         {
-            CronnyControl.Bus.Dispose();
+            CronnyControl.Stop();
         }
 
         public void Canary()
@@ -24,19 +25,12 @@ namespace Cronny.Tests
             Should.CompleteIn(() => reset.Wait(), TimeSpan.FromSeconds(2));
         }
 
-        // public void Run_MessageShouldBeSentEachMinute_ShouldReceiveIt()
-        // {
-        //     var resetEvent = new ManualResetEventSlim();
-        //     CronnyControl.Bus.Subscribe<EachMinuteJobMessage>("test", m => resetEvent.Set());
-        //     CronnyControl.Run();
-        //     try
-        //     {
-        //         Should.CompleteIn(() => resetEvent.Wait(), TimeSpan.FromMinutes(2));
-        //     }
-        //     finally
-        //     {
-        //         CronnyControl.Bus.Dispose();
-        //     }
-        // }
+        public void Run_MessageShouldBeSentOnStart_ShouldReceiveIt()
+        {
+            var resetEvent = new ManualResetEventSlim();
+            CronnyControl.Bus.Subscribe<EachMinuteJobMessage>("test", m => resetEvent.Set());
+            CronnyControl.Run();
+            Should.CompleteIn(() => resetEvent.Wait(), TimeSpan.FromSeconds(2));
+        }
     }
 }
