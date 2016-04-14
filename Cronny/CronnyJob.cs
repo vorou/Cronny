@@ -4,8 +4,8 @@ namespace Cronny
 {
     public class CronnyJob : Attribute
     {
-        public string Cron { get; private set; }
-        public bool FireOnStart { get; private set; }
+        public string Cron { get; }
+        public bool FireOnStart { get; }
 
         public CronnyJob(string cron, bool fireOnStart = false)
         {

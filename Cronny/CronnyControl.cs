@@ -1,7 +1,5 @@
 ﻿using System;
-using Common.Logging;
-using Common.Logging.Simple;
-using Cronny.TestMessages;
+using System.Linq;
 using EasyNetQ;
 using Quartz;
 using Quartz.Impl;
@@ -23,23 +21,23 @@ namespace Cronny
         {
             try
             {
-                LogManager.Adapter = new ConsoleOutLoggerFactoryAdapter {Level = LogLevel.Info};
                 Scheduler = StdSchedulerFactory.GetDefaultScheduler();
                 Scheduler.Start();
 
-                //TODO: remove needless stuff
-                //TODO: scan for JobMessages
-                IJobDetail job = JobBuilder.Create<YoJob>()
-                                           .WithIdentity("job1", "group1")
-                                           .Build();
-                ITrigger trigger = TriggerBuilder.Create()
-                                                 .WithIdentity("trigger1", "group1")
-                                                 .StartNow()
-                    //TODO: grab actual schedule from attribute
-                                                 .WithSimpleSchedule(x => x.WithIntervalInSeconds(1)
-                                                                           .RepeatForever())
-                                                 .Build();
-                Scheduler.ScheduleJob(job, trigger);
+                var jobMessages = AppDomain.CurrentDomain.GetAssemblies()
+                                           .SelectMany(s => s.GetTypes())
+                                           .Where(p => p.Name.EndsWith("JobMessage"));
+
+                foreach (var jobMessage in jobMessages)
+                {
+                    Console.Out.WriteLine(jobMessage);
+                    var sendMessageJobType = typeof (SendMessageJob<>).MakeGenericType(jobMessage);
+                    var job = JobBuilder.Create(sendMessageJobType).Build();
+                    //TODO: propa trigger
+                    //TODO: fire now logic
+                    var trigger = TriggerBuilder.Create().StartAt(DateTimeOffset.UtcNow.AddSeconds(1)).Build();
+                    Scheduler.ScheduleJob(job, trigger);
+                }
             }
             catch (SchedulerException se)
             {
@@ -51,15 +49,6 @@ namespace Cronny
         {
             Scheduler.Shutdown();
             Bus.Dispose();
-        }
-    }
-
-    //TODO: job should be generic
-    public class YoJob : IJob
-    {
-        public void Execute(IJobExecutionContext context)
-        {
-            CronnyControl.Bus.Publish(new EachMinuteJobMessage());
         }
     }
 }

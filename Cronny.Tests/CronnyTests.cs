@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using Cronny.TestMessages;
 using Shouldly;
 
 namespace Cronny.Tests
